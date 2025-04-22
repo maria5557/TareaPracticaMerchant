@@ -13,6 +13,7 @@ public class Merchant extends MainTable {
 
     private String name;
     private String address;
+    private String idCliente;
 
     @DynamoDBTypeConvertedEnum
     private MerchantType merchantType;
