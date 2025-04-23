@@ -1,8 +1,10 @@
 package com.example.merchant.controller;
 
-import com.example.merchant.dto.MerchantFullDTO;
+import com.example.merchant.dto.MerchantInputDTO;
+import com.example.merchant.dto.MerchantOutputDTO;
 import com.example.merchant.entity.Merchant;
-import com.example.merchant.mappers.MerchantMapper;
+import com.example.merchant.mappers.MerchantInputMapper;
+import com.example.merchant.mappers.MerchantOutputMapper;
 import com.example.merchant.service.MerchantService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.StringUtils;
@@ -26,14 +28,14 @@ public class MerchantController {
     // Crear un merchant
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<MerchantFullDTO> createMerchant(@RequestBody @Valid MerchantFullDTO merchantFullDTO) {
-        Merchant saved = merchantService.createMerchant(MerchantMapper.INSTANCE.merchantDTOToMerchant(merchantFullDTO));
-        return ResponseEntity.ok(MerchantMapper.INSTANCE.merchantToMerchantDTO(saved));
+    public ResponseEntity<MerchantOutputDTO> createMerchant(@RequestBody @Valid MerchantInputDTO merchantInputDTO) {
+        Merchant saved = merchantService.createMerchant(MerchantInputMapper.INSTANCE.merchantInputDTOToMerchant(merchantInputDTO));
+        return ResponseEntity.ok(MerchantOutputMapper.INSTANCE.merchantToMerchantDTO(saved));
     }
 
     // Buscar merchant por ID, con opción simpleOutput
     @GetMapping("/{id}")
-    public ResponseEntity<MerchantFullDTO> findById(
+    public ResponseEntity<MerchantOutputDTO> findById(
             @PathVariable String id,
             @RequestParam(value = "simpleOutput", required = false) String simpleOutput) {
 
@@ -42,9 +44,9 @@ public class MerchantController {
 
         if (merchant != null) {
             if (StringUtils.equals("simpleOutput", simpleOutput)) {
-                return ResponseEntity.ok(new MerchantFullDTO(merchant.getId(), merchant.getName(), null, null,null));
+                return ResponseEntity.ok(new MerchantOutputDTO(merchant.getId(), merchant.getName(), null, null,null));
             } else {
-                return ResponseEntity.ok(MerchantMapper.INSTANCE.merchantToMerchantDTO(merchant));
+                return ResponseEntity.ok(MerchantOutputMapper.INSTANCE.merchantToMerchantDTO(merchant));
             }
         }
 
@@ -53,39 +55,39 @@ public class MerchantController {
 
     // Buscar merchants por nombre
     @GetMapping("/search/{name}")
-    public ResponseEntity<List<MerchantFullDTO>> findMerchantsByName(@PathVariable String name) {
+    public ResponseEntity<List<MerchantOutputDTO>> findMerchantsByName(@PathVariable String name) {
         List<Merchant> merchants = merchantService.findMerchantsByName(name);
 
         if (merchants.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        List<MerchantFullDTO> merchantFullDTOS = merchants.stream()
-                .map(MerchantMapper.INSTANCE::merchantToMerchantDTO)
+        List<MerchantOutputDTO> merchantOutputDTOS = merchants.stream()
+                .map(MerchantOutputMapper.INSTANCE::merchantToMerchantDTO)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(merchantFullDTOS);
+        return ResponseEntity.ok(merchantOutputDTOS);
     }
 
     // Actualizar merchant
     @PutMapping("/{id}")
-    public ResponseEntity<MerchantFullDTO> updateMerchant(
+    public ResponseEntity<MerchantOutputDTO> updateMerchant(
             @PathVariable String id,
-            @RequestBody @Valid MerchantFullDTO merchantFullDTO) {
+            @RequestBody @Valid MerchantInputDTO merchantInputDTO) {
 
         Merchant existing = merchantService.getMerchantById(id);
         if (existing == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        existing.setName(merchantFullDTO.getName());
-        existing.setAddress(merchantFullDTO.getAddress());
-        existing.setMerchantType(merchantFullDTO.getMerchantType());
-        existing.setIdCliente(merchantFullDTO.getIdCliente());
+        existing.setName(merchantInputDTO.getName());
+        existing.setAddress(merchantInputDTO.getAddress());
+        existing.setMerchantType(merchantInputDTO.getMerchantType());
+        existing.setIdCliente(merchantInputDTO.getIdCliente());
 
         Merchant updated = merchantService.saveMerchant(existing);
 
-        return ResponseEntity.ok(MerchantMapper.INSTANCE.merchantToMerchantDTO(updated));
+        return ResponseEntity.ok(MerchantOutputMapper.INSTANCE.merchantToMerchantDTO(updated));
     }
 
     // Obtener el ID del cliente al que pertenece un merchant
