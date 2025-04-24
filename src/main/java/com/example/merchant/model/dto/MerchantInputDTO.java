@@ -1,4 +1,4 @@
-package com.example.merchant.dto;
+package com.example.merchant.model.dto;
 
 
 import com.example.merchant.model.MerchantType;

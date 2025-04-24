@@ -1,6 +1,6 @@
 package com.example.merchant.mappers;
 
-import com.example.merchant.dto.MerchantOutputDTO;
+import com.example.merchant.model.dto.MerchantOutputDTO;
 import com.example.merchant.entity.Merchant;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
