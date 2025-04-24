@@ -55,7 +55,6 @@ public class MerchantController {
             @RequestParam(value = "simpleOutput", required = false) String simpleOutput) {
 
         Merchant merchant = merchantService.getMerchantById(id);
-        System.out.println("Valor de simpleOutput: " + simpleOutput);
 
         if (merchant != null) {
             if (StringUtils.equals("simpleOutput", simpleOutput)) {
