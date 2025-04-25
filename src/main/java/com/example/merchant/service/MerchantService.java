@@ -24,6 +24,7 @@ public class MerchantService {
         merchant.setId(UUID.randomUUID().toString());
         merchant.setPk("merchantEntity");
         merchant.setSk("documentID#" + merchant.getName());
+        merchant.setNameLowerCase(merchant.getName().toLowerCase());  // Guardar el nombre en minúsculas
         return MerchantOutputMapper.INSTANCE.merchantToMerchantDTO(merchantRepository.save(merchant));
     }
 
@@ -55,6 +56,7 @@ public class MerchantService {
         merchant.setIdCliente(dto.getIdCliente());
         merchant.setPk("merchantEntity");
         merchant.setSk("documentID#" + merchant.getName());
+        merchant.setNameLowerCase(dto.getName().toLowerCase());  // Guardar el nombre en minúsculas
 
         return MerchantOutputMapper.INSTANCE.merchantToMerchantDTO(merchantRepository.save(merchant));
     }

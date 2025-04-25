@@ -12,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 public class Merchant extends MainTable {
 
     private String name;
+    private String nameLowerCase;
     private String address;
     private String idCliente = "";
 

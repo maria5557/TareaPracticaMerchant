@@ -40,9 +40,26 @@ public class MerchantRepository {
     }
 
     public List<Merchant> findByName(String name) {
-        List<Merchant> allMerchants = dynamoDBMapper.scan(Merchant.class, new DynamoDBScanExpression());
-        return allMerchants.stream()
-                .filter(merchant -> merchant.getName().toLowerCase().contains(name.toLowerCase()))
-                .collect(Collectors.toList());
+
+        // Convertimos el nombre a minúsculas para la búsqueda
+        String lowerCaseName = name.toLowerCase();
+
+        Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
+        expressionAttributeValues.put(":pk", new AttributeValue().withS("merchantEntity"));
+        expressionAttributeValues.put(":name", new AttributeValue().withS(lowerCaseName));
+
+        Map<String, String> expressionAttributeNames = new HashMap<>();
+        expressionAttributeNames.put("#nameLowerCase", "nameLowerCase");
+
+        // Crear la expresión de la consulta
+        DynamoDBQueryExpression<Merchant> queryExpression = new DynamoDBQueryExpression<Merchant>()
+                .withKeyConditionExpression("PK = :pk")
+                .withExpressionAttributeValues(expressionAttributeValues)
+                .withExpressionAttributeNames(expressionAttributeNames)
+                .withFilterExpression("contains(#nameLowerCase, :name)")
+                .withConsistentRead(false);
+
+        // Realizamos la consulta
+        return dynamoDBMapper.query(Merchant.class, queryExpression);
     }
 }
