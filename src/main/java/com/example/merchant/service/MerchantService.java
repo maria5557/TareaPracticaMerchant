@@ -54,8 +54,6 @@ public class MerchantService {
         merchant.setAddress(dto.getAddress());
         merchant.setMerchantType(dto.getMerchantType());
         merchant.setIdCliente(dto.getIdCliente());
-        merchant.setPk("merchantEntity");
-        merchant.setSk("documentID#" + merchant.getName());
         merchant.setNameLowerCase(dto.getName().toLowerCase());  // Guardar el nombre en minúsculas
 
         return MerchantOutputMapper.INSTANCE.merchantToMerchantDTO(merchantRepository.save(merchant));
