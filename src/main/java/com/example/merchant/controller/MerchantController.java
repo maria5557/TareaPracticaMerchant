@@ -91,4 +91,17 @@ public class MerchantController {
 
         return ResponseEntity.ok(clientId);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMerchant(@PathVariable String id) {
+        boolean deleted = merchantService.deleteMerchant(id);
+        return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MerchantOutputDTO>> getAllMerchants() {
+        List<MerchantOutputDTO> merchants = merchantService.getAllMerchants();
+        return merchants != null ? ResponseEntity.ok(merchants) : ResponseEntity.notFound().build();
+    }
+
 }

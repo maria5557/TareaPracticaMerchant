@@ -33,7 +33,7 @@ public class MerchantService {
         if (merchant == null) return null;
 
         if ("simpleOutput".equals(simpleOutput)) {
-            return new MerchantOutputDTO(merchant.getId(), merchant.getName(), null, null, null);
+            return new MerchantOutputDTO(merchant.getId(), merchant.getName(), null, null, null,null);
         }
 
         return MerchantOutputMapper.INSTANCE.merchantToMerchantDTO(merchant);
@@ -66,5 +66,21 @@ public class MerchantService {
 
     public Merchant findRawById(String id) {
         return merchantRepository.findById(id);
+    }
+
+    public boolean deleteMerchant(String id) {
+        Merchant m = merchantRepository.findById(id);
+        if (m == null) {
+            return false;
+        }
+        merchantRepository.delete(m);
+        return true;
+    }
+
+    public List<MerchantOutputDTO> getAllMerchants() {
+        return merchantRepository.findAllMerchants()
+                .stream()
+                .map(MerchantOutputMapper.INSTANCE::merchantToMerchantDTO)
+                .collect(Collectors.toList());
     }
 }

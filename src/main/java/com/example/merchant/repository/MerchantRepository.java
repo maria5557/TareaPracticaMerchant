@@ -5,13 +5,12 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.example.merchant.entity.Merchant;
+import com.example.merchant.service.MerchantService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
@@ -62,4 +61,21 @@ public class MerchantRepository {
         // Realizamos la consulta
         return dynamoDBMapper.query(Merchant.class, queryExpression);
     }
+
+
+    public void delete(Merchant m) {
+        dynamoDBMapper.delete(m);
+    }
+
+    public List<Merchant> findAllMerchants() {
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":pk", new AttributeValue().withS("merchantEntity"));
+
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                .withFilterExpression("PK = :pk")
+                .withExpressionAttributeValues(eav);
+
+        return dynamoDBMapper.scan(Merchant.class, scanExpression);
+    }
+
 }
